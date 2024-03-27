@@ -20,7 +20,12 @@ const getStudentById = async (req, res) => {
   console.log(req.params);
   try {
     const student = await Student.findById(req.params.id);
-    res.status(200).send(student);
+    if (!student) {
+      res.status(404).send("student not found");
+    }
+    else {
+      res.status(200).send(student);
+    }
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);
@@ -41,8 +46,15 @@ const postStudents = async (req, res) => {
 //updatye a sudent with the given id
 const putStudents = (req, res) => {};
 
-const deleteStudents = (req, res) => {
-  res.send("student delete");
+const deleteStudents = async (req, res) => {
+  console.log("student delete");
+  try {
+    await Student.findByIdAndDelete(req.params.id);
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error.message);
+  }
 };
 
 module.exports = {
