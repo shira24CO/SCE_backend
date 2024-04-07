@@ -9,6 +9,7 @@
     "test": "jest --detectOpenHandles --forceExit --coverage",
     "testStudent": "jest --detectOpenHandles --forceExit --coverage ./src/tests/student.test.ts",
     "testAuth": "jest --detectOpenHandles --forceExit --coverage ./src/tests/auth.test.ts",
+    "testPost": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/post.test.ts",
     "lint": "eslint . --ext .ts"
   },
   "author": "Shira Cohen",
