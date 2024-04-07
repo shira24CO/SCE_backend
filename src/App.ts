@@ -3,6 +3,7 @@ const app = express();
 import dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
+import authRoute from "./routes/auth_route";
 import studentRoute from "./routes/student_route";
 import postRoute from "./routes/post_route";
 import bodyParser from "body-parser";
@@ -16,7 +17,8 @@ const initApp = () => {
             app.use(bodyParser.json());
             app.use(bodyParser.urlencoded({ extended: true }));
             app.use("/student", studentRoute);
-            app.use("/post", postRoute); 
+            app.use("/post", postRoute);
+            app.use("/auth", authRoute); 
             resolve(app);
         });
     });
