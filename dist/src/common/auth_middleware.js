@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("auth Middleware");
+    console.log("Token: " + req.headers['authorization']);
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) {
@@ -22,7 +23,7 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
     jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err) {
-            return res.status(401).send("invalid token");
+            return res.status(403).send("invalid token");
         }
         req.body.user = user;
         next();

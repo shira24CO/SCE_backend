@@ -10,5 +10,5 @@ class StudentController extends base_controller_1.default {
         super(student_model_1.default);
     }
 }
-exports.default = new StudentController;
+exports.default = new StudentController();
 //# sourceMappingURL=student_controller.js.map

@@ -1,24 +1,32 @@
 import mongoose from "mongoose";
 
-export interface IPost {
-  title: string;
-  message: string;
-  owner: string;
+
+export interface IPost{
+    _id:number,
+    postText:string,
+    owner:string,
+    postImageUrl:string
 }
-
 const postSchema = new mongoose.Schema<IPost>({
-  title: {
-    type: String,
-    required: true,
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  owner: {
-    type: String,
-    required: true,
-  },
-});
+    _id:{
+        type:Number,
+        required:true
+    },
+    postText:{
+        type:String,
+        required:true
+    },
+    owner:{ //user who upload post
+        type:String,
+        required:true
+    },
+    postImageUrl:{
+        type:String,
+        required:true
+    }
+    
 
-export default mongoose.model<IPost>("Post", postSchema);
+    
+})
+
+export default mongoose.model<IPost>("Post",postSchema);

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     console.log("auth Middleware");
+    console.log("Token: "+req.headers['authorization']);
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -12,7 +13,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if(err) {
-            return res.status(401).send("invalid token");
+            return res.status(403).send("invalid token");
         }
         req.body.user = user;
         next();

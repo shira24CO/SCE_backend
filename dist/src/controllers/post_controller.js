@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const base_controller_1 = __importDefault(require("./base_controller"));
 const post_model_1 = __importDefault(require("../models/post_model"));
+const base_controller_1 = __importDefault(require("./base_controller"));
 class PostController extends base_controller_1.default {
     constructor() {
         super(post_model_1.default);

@@ -1,14 +1,14 @@
 import express from "express";
-import authController from "../controllers/auth_controller";
 const router = express.Router();
-
+import authController from "../controllers/auth_controller"
 
 /**
 * @swagger
 * tags:
 *   name: Auth
-*   description: The Authentication API
+*   description: The Authentication API 
 */
+
 
 /**
 * @swagger
@@ -17,7 +17,7 @@ const router = express.Router();
 *     bearerAuth:
 *       type: http
 *       scheme: bearer
-*       bearerFormat: JWT
+*       bearerFormat: JWT      
 */
 
 /**
@@ -30,7 +30,7 @@ const router = express.Router();
 *         - email
 *         - password
 *       properties:
-*         email:
+*         email :
 *           type: string
 *           description: The user email
 *         password:
@@ -38,7 +38,7 @@ const router = express.Router();
 *           description: The user password
 *       example:
 *         email: 'bob@gmail.com'
-*         password: '123456'
+*         password: '123456' 
 *     Tokens:
 *       type: object
 *       required:
@@ -53,8 +53,32 @@ const router = express.Router();
 *           description: The JWT refresh token
 *       example:
 *         accessToken: '123cd123x1xx1'
-*         refreshToken: '134r2134cr1x3c'
+*         refreshToken: '134r2134cr1x3c' 
 */
+
+
+/**
+* @swagger
+* /auth/login:
+*   post:
+*     summary: login existing user by email and password
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             $ref: '#/components/schemas/User'
+*     responses:
+*       200:
+*         description: The access & refresh tokens
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Tokens' 
+*/
+router.post("/login",authController.login);
+
 
 
 /**
@@ -77,29 +101,8 @@ const router = express.Router();
 *             schema:
 *               $ref: '#/components/schemas/User'
 */
-router.post("/register", authController.register);
-
-/**
-* @swagger
-* /auth/login:
-*   post:
-*     summary: login existing user by email and password
-*     tags: [Auth]
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             $ref: '#/components/schemas/User'
-*     responses:
-*       200:
-*         description: The acess & refresh tokens
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/Tokens'
-*/
-router.post("/login", authController.login);
+router.post("/register",authController.register);
+router.post("/google",authController.signInWithGoogle)
 
 /**
 * @swagger
@@ -114,24 +117,29 @@ router.post("/login", authController.login);
 *       200:
 *         description: logout completed successfully
 */
-router.get("/logout", authController.logout);
+router.get("/logout",authController.logout);
+
 
 /**
 * @swagger
 * /auth/refresh:
 *   get:
-*     summary: get a new access and refresh tokens using the refresh token
+*     summary: get  new access and refresh tokens using the original refresh token
 *     tags: [Auth]
 *     description: need to provide the refresh token in the auth header
 *     security:
 *       - bearerAuth: []
 *     responses:
 *       200:
-*         description: The acess & refresh tokens
+*         description: The access and refresh tokens
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Tokens'
+*               $ref: '#/components/schemas/Tokens'  
 */
-router.get("/refresh", authController.refresh);
+//Route to get a new refresh token
+//We do not send anything in the HTTP body request
+//The refresh token is in the header of the HTTP request
+router.get("/refresh",authController.refresh);
+
 export default router;

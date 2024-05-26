@@ -1,22 +1,27 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-export interface IStudent {
+
+export interface IStudent{
+    name:string,
+    _id:string,
+    imageUrl:string,
+    
 
 }
-
 const studentSchema = new mongoose.Schema<IStudent>({
-  name: {
-    type: String,
-    required: true,
-  },
-  _id: {
-    type: String,
-    required: true,
-  },
-  age: {
-    type: Number,
-    required: true,
-  },
+    name:{
+        type:String,
+        required: true,
+    },
+    _id:{
+        type:String,
+        required:true,
+    },
+    imageUrl:{
+        type:String,
+        required:false,
+    },
+    
+    
 });
-
-export default mongoose.model<IStudent>("Student", studentSchema);
+export default mongoose.model<IStudent>("Student",studentSchema);
