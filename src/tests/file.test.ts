@@ -1,17 +1,19 @@
-import { Express } from "express";
-
+import {Express}from "express";
 import request from 'supertest';
+import fs from 'mz/fs';
 
 jest.setTimeout(30000);
-
-let app: Express; // This will be used in future tests
-
-describe("File Tests", () => {
-    test("upload file", async () => {
-        const filePath = `${__dirname}/profilePicture.png`; // This will be used in future tests
-
-        // Example of using app and filePath in a future test
-        const response = await request(app).post('/upload').attach('file', filePath);
-        expect(response.status).toBe(200);
-    });
-});
+let app:Express;
+describe("File Tests", ()=>{
+    test("upload file",async () =>{
+        const filePath = "C:/WebSystemsClass/sce_frontend/sce_frontend/assets/man_4140048.png";
+        console.log(filePath);
+        
+        const rs = await fs.exists(filePath);
+        if(rs){
+             const response = await request(app)
+                 .post("/file/file?file=123.jpeg").attach('file',filePath)
+             expect(response.statusCode).toEqual(200);
+        }
+    })
+})

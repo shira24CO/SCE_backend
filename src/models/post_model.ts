@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema<IPost>({
     },
     postImageUrl:{
         type:String,
-        required:true
+        required:false
     }
     
 

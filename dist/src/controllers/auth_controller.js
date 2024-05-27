@@ -50,6 +50,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             userInstitution: institution
         });
         const userTokens = generateTokens(newUser._id.toString());
+        console.log("Generated tokens:", userTokens); // Debug log
         return res.status(200).send({
             firstName: firstName,
             lastName: lastName,
@@ -103,6 +104,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const { accessToken, refreshToken } = generateTokens(user._id.toString());
         const userFullName = user.firstName + " " + user.lastName;
+        console.log("access token: " + accessToken);
+        console.log("refresh token: " + refreshToken);
         if (user.tokens == null) {
             user.tokens = [refreshToken];
         }
@@ -155,9 +158,37 @@ const signInWithGoogle = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(400).send(error.message);
     }
 });
-const logout = (req, res) => {
-    res.status(400).send("logout");
-};
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.status(401).send("Missing Token");
+    }
+    jsonwebtoken_1.default.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, userInfo) => __awaiter(void 0, void 0, void 0, function* () {
+        if (err) {
+            console.error("error verifying token");
+            return res.status(403).send("Invalid Token");
+        }
+        try {
+            const user = yield user_model_1.default.findById(userInfo._id);
+            if (user == null || user.tokens == null || !user.tokens.includes(token)) {
+                if (user.tokens != null) {
+                    user.tokens = []; //delete all refresh tokens of user, now no one can create new access token for that user
+                    yield user.save();
+                    console.error("Erasing tokens...");
+                    return res.status(403).send("Invalid Token");
+                }
+            }
+            //User token is valid and is kept in its tokens
+            user.tokens.splice(user.tokens.indexOf(token), 1);
+            yield user.save();
+            res.status(200).send("Logout succeeded");
+        }
+        catch (error) {
+            res.status(403).send(error.message);
+        }
+    }));
+});
 const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //First extract token from HTTP header request
     const authHeader = req.headers['authorization']; // authorization Header =  bearer(TOKEN TYPE)+ " " + token

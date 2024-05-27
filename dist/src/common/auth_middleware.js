@@ -21,7 +21,7 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     if (token == null) {
         return res.status(401).send("missing token");
     }
-    jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    jsonwebtoken_1.default.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) {
             return res.status(403).send("invalid token");
         }

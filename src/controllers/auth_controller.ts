@@ -1,4 +1,4 @@
-import {Request,Response} from "express"
+import { Request,Response} from "express"
 import User from "../models/user_model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -44,6 +44,7 @@ const register = async (req:Request,res:Response) =>{
             userInstitution:institution
         });
         const userTokens = generateTokens(newUser._id.toString())
+        console.log("Generated tokens:", userTokens); // Debug log
 
         return res.status(200).send({
             firstName:firstName,
@@ -107,6 +108,8 @@ const login = async (req:Request,res:Response) =>{
 
         const {accessToken,refreshToken} = generateTokens(user._id.toString());
         const userFullName = user.firstName + " " + user.lastName;
+        console.log("access token: "+accessToken);
+        console.log("refresh token: "+refreshToken);
 
         if(user.tokens == null){
             user.tokens = [refreshToken]
@@ -170,8 +173,37 @@ const signInWithGoogle = async(req:Request,res:Response) =>{
 }
 
 
-const logout = (req:Request,res:Response) =>{
-    res.status(400).send("logout");
+const logout = async(req:Request,res:Response) =>{
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if(token == null){
+        return res.status(401).send("Missing Token");
+    }
+    jwt.verify(token,process.env.REFRESH_TOKEN_SECRET,async(err,userInfo:{_id:string})=>{
+        if(err){
+            console.error("error verifying token")
+            return res.status(403).send("Invalid Token")
+        }
+        try{
+            const user = await User.findById(userInfo._id);
+            if(user == null || user.tokens == null || !user.tokens.includes(token)){
+                if(user.tokens != null){
+                    user.tokens = []; //delete all refresh tokens of user, now no one can create new access token for that user
+                    await user.save();
+                    console.error("Erasing tokens...")
+                    return res.status(403).send("Invalid Token");
+                }
+            }
+            //User token is valid and is kept in its tokens
+    
+            user.tokens.splice(user.tokens.indexOf(token),1);
+            await user.save();
+            res.status(200).send("Logout succeeded")
+        }catch(error){
+            res.status(403).send(error.message);
+        }
+    })
+    
 }
 
 const refresh = async(req:Request,res:Response) =>{

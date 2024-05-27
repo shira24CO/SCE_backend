@@ -19,7 +19,7 @@ const postSchema = new mongoose_1.default.Schema({
     },
     postImageUrl: {
         type: String,
-        required: true
+        required: false
     }
 });
 exports.default = mongoose_1.default.model("Post", postSchema);

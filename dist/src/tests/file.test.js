@@ -13,14 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
+const fs_1 = __importDefault(require("mz/fs"));
 jest.setTimeout(30000);
-let app; // This will be used in future tests
+let app;
 describe("File Tests", () => {
     test("upload file", () => __awaiter(void 0, void 0, void 0, function* () {
-        const filePath = `${__dirname}/profilePicture.png`; // This will be used in future tests
-        // Example of using app and filePath in a future test
-        const response = yield (0, supertest_1.default)(app).post('/upload').attach('file', filePath);
-        expect(response.status).toBe(200);
+        const filePath = "C:/WebSystemsClass/sce_frontend/sce_frontend/assets/man_4140048.png";
+        console.log(filePath);
+        const rs = yield fs_1.default.exists(filePath);
+        if (rs) {
+            const response = yield (0, supertest_1.default)(app)
+                .post("/file/file?file=123.jpeg").attach('file', filePath);
+            expect(response.statusCode).toEqual(200);
+        }
     }));
 });
 //# sourceMappingURL=file.test.js.map

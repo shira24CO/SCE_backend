@@ -42,9 +42,29 @@ class BaseController<ModelType>{
           return res.status(200).send(item);
         }
       }
+      if(req.query.owner != null){
+        console.log("owner");
+        console.log(req.query);
+        
+        const item = await this.itemModel.find({owner:req.query.owner});
+        if(item.length == 0){
+          return res.status(404).send("Not Found");
+        }
+        else{
+          return res.status(200).send(item);
+        }
+      }
+      if(req.body.owner!= null){
+        const item = await this.itemModel.find({owner:req.body.owner});
+        if(item.length == 0){
+          return res.status(404).send("Not Found");
+        }
+        else{
+          return res.status(200).send(item);
+        }
+      }
       else{
         const item = await this.itemModel.find();
-        //console.log(item);
         return res.status(200).send(item);
       }
       
@@ -73,10 +93,9 @@ class BaseController<ModelType>{
   }
   
   async post(req:Request, res:Response){
-    console.log("req.params = " + req.params[0])
-    console.log("req.body = " + req.body)
-
-    console.log("student post");
+    console.log("post");
+    console.log(req.body);
+    
     try{
       const item = await this.itemModel.create(req.body);
       res.status(201).send(item);
@@ -104,9 +123,11 @@ class BaseController<ModelType>{
           updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{imageUrl:req.query.imageUrl}},{"returnDocument":"after"});
         }
         
+        
       }
       if(req.params){
         idItem = req.params.id;
+        
         if(req.body){
           if(req.body.age){
             updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{age:req.body.age}},{"returnDocument":"after"});
@@ -128,6 +149,17 @@ class BaseController<ModelType>{
           }
           if(req.body.userCountry){
             updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{userCountry:req.body.userCountry}},{"returnDocument":"after"});
+          }
+          if(req.body.userImageUrl){
+            updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{userImageUrl:req.body.userImageUrl}},{"returnDocument":"after"});
+          }
+          if(req.body.postContent){
+            console.log("Updating post content");
+            updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{postText:req.body.postContent}},{"returnDocument":"after"});
+          }
+          if(req.body.postImageUrl){
+            console.log("Updating post image");
+            updated = await this.itemModel.findOneAndUpdate({_id:idItem},{$set:{postImageUrl:req.body.postImageUrl}},{"returnDocument":"after"});
           }
         }
       }
